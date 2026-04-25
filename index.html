@@ -123,7 +123,6 @@
     <div class="meta">
       <div><strong>Locatie:</strong> Berliner Dom, Museumeiland</div>
       <div><strong>Groepsgrootte:</strong> 3&ndash;4 leerlingen</div>
-      <div><strong>Jouw letters:</strong> HOHENZ (posities 1&ndash;6)</div>
       <div><strong>Eindwoord:</strong> samen met de Lustgarten-groep</div>
     </div>
   </div>
@@ -159,7 +158,7 @@
           <div class="antwoord-wrap"><span class="antwoord-label">Jouw antwoord</span><textarea class="antwoord" placeholder="Schrijf hier jullie antwoord..."></textarea></div>
         </div>
       </div>
-      <div class="check-row"><button class="btn-check" onclick="approve(1)">&#10003; Goedgekeurd door docent</button><span class="status" id="st-1">Wacht op goedkeuring</span></div>
+      <div class="check-row"><button class="btn-check" onclick="approvePin(1)">Goedgekeurd door docent</button><span class="status" id="st-1">Wacht op goedkeuring</span></div>
     </div>
 
     <!-- OPDRACHT 2 — levert letter Z op positie 6 -->
@@ -175,7 +174,7 @@
           <div class="antwoord-wrap"><span class="antwoord-label">Jouw antwoord</span><textarea class="antwoord" placeholder="Schrijf hier jullie antwoord..."></textarea></div>
         </div>
       </div>
-      <div class="check-row"><button class="btn-check" onclick="approve(2)">&#10003; Goedgekeurd door docent</button><span class="status" id="st-2">Wacht op goedkeuring</span></div>
+      <div class="check-row"><button class="btn-check" onclick="approvePin(2)">Goedgekeurd door docent</button><span class="status" id="st-3">Wacht op goedkeuring</span></div>
     </div>
 
     <!-- OPDRACHT 3 — levert letter O op positie 2 -->
@@ -191,7 +190,7 @@
           <div class="antwoord-wrap"><span class="antwoord-label">Jouw antwoord</span><textarea class="antwoord" placeholder="Schrijf hier jullie antwoord..."></textarea></div>
         </div>
       </div>
-      <div class="check-row"><button class="btn-check" onclick="approve(3)">&#10003; Goedgekeurd door docent</button><span class="status" id="st-3">Wacht op goedkeuring</span></div>
+      <div class="check-row"><button class="btn-check" onclick="approvePin(3)">Goedgekeurd door docent</button><span class="status" id="st-3">Wacht op goedkeuring</span></div>
     </div>
 
     <!-- OPDRACHT 4 — levert letter H op positie 1 -->
@@ -207,7 +206,7 @@
           <div class="antwoord-wrap"><span class="antwoord-label">Jouw antwoord</span><textarea class="antwoord" placeholder="Schrijf hier jullie antwoord..."></textarea></div>
         </div>
       </div>
-      <div class="check-row"><button class="btn-check" onclick="approve(4)">&#10003; Goedgekeurd door docent</button><span class="status" id="st-4">Wacht op goedkeuring</span></div>
+      <div class="check-row"><button class="btn-check" onclick="approvePin(4)">Goedgekeurd door docent</button><span class="status" id="st-3">Wacht op goedkeuring</span></div>
     </div>
 
     <!-- OPDRACHT 5 — levert letter N op positie 5 -->
@@ -223,7 +222,7 @@
           <div class="antwoord-wrap"><span class="antwoord-label">Jouw antwoord</span><textarea class="antwoord" placeholder="Schrijf hier jullie antwoord..."></textarea></div>
         </div>
       </div>
-      <div class="check-row"><button class="btn-check" onclick="approve(5)">&#10003; Goedgekeurd door docent</button><span class="status" id="st-5">Wacht op goedkeuring</span></div>
+      <div class="check-row"><button class="btn-check" onclick="approvePin(5)">Goedgekeurd door docent</button><span class="status" id="st-3">Wacht op goedkeuring</span></div>
     </div>
 
     <!-- OPDRACHT 6 — levert letter E op positie 4 — zelfde vraag als Lustgarten vraag 6 -->
@@ -246,7 +245,7 @@
 
   <div id="done-banner">
     <h2>Alle Dom-opdrachten voltooid!</h2>
-    <p>Jullie hebben alle 6 letters verdiend! Zoek nu de Lustgarten-groep op en open samen de <strong>Samenvoeg-app</strong> om het eindwoord te ontdekken.</p>
+    <p>Jullie hebben alle 6 letters verdiend! Zoek nu de Lustgarten-groep op om het eindwoord te ontdekken.</p>
   </div>
 
   <div class="docent-bar">
@@ -282,6 +281,7 @@ const ASSIGN = [
 ];
 
 let approved = {};
+let pendingApproval = null;
 
 function buildSlots() {
   const row = document.getElementById('slots');
@@ -349,11 +349,16 @@ function pinKey(d) {
     setTimeout(() => {
       if (pinBuffer === PIN_CODE) {
         document.getElementById('pin-overlay').classList.remove('active');
-        const el = document.getElementById('docent-info');
-        const btn = document.querySelector('.btn-docent');
-        el.classList.add('vis');
-        btn.textContent = '\u25B2 Verberg';
-        btn.onclick = closeDocent;
+        if (pendingApproval !== null) {
+          approve(pendingApproval);
+          pendingApproval = null;
+        } else {
+          const el = document.getElementById('docent-info');
+          const btn = document.querySelector('.btn-docent');
+          el.classList.add('vis');
+          btn.textContent = '\u25B2 Verberg';
+          btn.onclick = closeDocent;
+        }
       } else {
         document.getElementById('pin-error').textContent = 'Onjuiste code, probeer opnieuw.';
         pinBuffer = '';
@@ -392,6 +397,14 @@ function toggleDocent() { openPin(); }
 
 
 buildSlots();
+
+function approvePin(q) {
+  pendingApproval = q;
+  pinBuffer = '';
+  updatePinDots();
+  document.getElementById('pin-error').textContent = '';
+  document.getElementById('pin-overlay').classList.add('active');
+}
 </script>
 
 <!-- PIN MODAL -->
