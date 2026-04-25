@@ -395,9 +395,6 @@ function closeDocent() {
 
 function toggleDocent() { openPin(); }
 
-
-buildSlots();
-
 function approvePin(q) {
   pendingApproval = q;
   pinBuffer = '';
@@ -405,6 +402,9 @@ function approvePin(q) {
   document.getElementById('pin-error').textContent = '';
   document.getElementById('pin-overlay').classList.add('active');
 }
+  
+buildSlots();
+
 </script>
 
 <!-- PIN MODAL -->
