@@ -284,7 +284,6 @@ const ASSIGN = [
   { q:5, letter:'N', slotIdx:4, code:'5905' },
   { q:6, letter:'E', slotIdx:3, code:'6978' },
 ];
-
 let approved = {};
 
 function buildSlots() {
@@ -404,7 +403,7 @@ if (pinBuffer === verwacht) {
     btn.textContent = '\u25B2 Verberg';
     btn.onclick = closeDocent;
   }
-      } else {
+} else {
         document.getElementById('pin-error').textContent = 'Onjuiste code, probeer opnieuw.';
         pinBuffer = '';
         updatePinDots();
