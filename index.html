@@ -277,12 +277,12 @@
 // Q1->H(pos3, idx2), Q2->Z(pos6, idx5), Q3->O(pos2, idx1), Q4->H(pos1, idx0), Q5->N(pos5, idx4), Q6->E(pos4, idx3)
 const WORD = 'HOHENZ'; // first 6 letters of HOHENZOLLERN
 const ASSIGN = [
-  { q:1, letter:'H', slotIdx:2 },  // pos 3
-  { q:2, letter:'Z', slotIdx:5 },  // pos 6
-  { q:3, letter:'O', slotIdx:1 },  // pos 2
-  { q:4, letter:'H', slotIdx:0 },  // pos 1
-  { q:5, letter:'N', slotIdx:4 },  // pos 5
-  { q:6, letter:'E', slotIdx:3 },  // pos 4
+  { q:1, letter:'H', slotIdx:2, code:'7829' },
+  { q:2, letter:'Z', slotIdx:5, code:'2392' },
+  { q:3, letter:'O', slotIdx:1, code:'6165' },
+  { q:4, letter:'H', slotIdx:0, code:'1174' },
+  { q:5, letter:'N', slotIdx:4, code:'5905' },
+  { q:6, letter:'E', slotIdx:3, code:'6978' },
 ];
 
 let approved = {};
@@ -390,18 +390,20 @@ function pinKey(d) {
   updatePinDots();
   if (pinBuffer.length === 4) {
     setTimeout(() => {
-      if (pinBuffer === PIN_CODE) {
-        document.getElementById('pin-overlay').classList.remove('active');
-        if (pendingApproval !== null) {
-          approve(pendingApproval);
-          pendingApproval = null;
-        } else {
-          const el = document.getElementById('docent-info');
-          const btn = document.querySelector('.btn-docent');
-          el.classList.add('vis');
-          btn.textContent = '\u25B2 Verberg';
-          btn.onclick = closeDocent;
-        }
+const a = pendingApproval !== null ? ASSIGN.find(x => x.q === pendingApproval) : null;
+const verwacht = a ? a.code : PIN_CODE;
+if (pinBuffer === verwacht) {
+  document.getElementById('pin-overlay').classList.remove('active');
+  if (pendingApproval !== null) {
+    approve(pendingApproval);
+    pendingApproval = null;
+  } else {
+    const el = document.getElementById('docent-info');
+    const btn = document.querySelector('.btn-docent');
+    el.classList.add('vis');
+    btn.textContent = '\u25B2 Verberg';
+    btn.onclick = closeDocent;
+  }
       } else {
         document.getElementById('pin-error').textContent = 'Onjuiste code, probeer opnieuw.';
         pinBuffer = '';
